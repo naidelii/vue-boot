@@ -54,22 +54,23 @@ function handleMenu(menuList) {
  * @returns {object} route
  */
 function createRouteFromMenu(menu) {
+  const url = menu.url
   const route = {
     // 如果没有url，使用（'/' + id）作为路径
-    path: menu.url || `/${menu.id}`,
+    path: url ? '/' + url : `/${menu.id}`,
     // 如果没有url，使用id生成name
-    name: menu.url ? menu.url.replace('/', '-') : `route-${menu.id}`,
+    name: url ? url.replace('/', '-') : `route-${menu.id}`,
     meta: {
       title: menu.name,
       icon: menu.icon
     },
     children: []
   }
-  // 处理component
-  if (menu.url) {
-    route.component = loadView(menu.url)
-  } else {
+  // 处理component（0：目录，1：菜单，2：按钮权限）
+  if (menu.type === 0) {
     route.component = Layout
+  } else if (menu.type === 1) {
+    route.component = loadView(menu.url)
   }
   return route
 }

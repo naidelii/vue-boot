@@ -39,6 +39,8 @@ export const constantRoutes = [
 
 const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
+  // 设置为 'history' 模式
+  mode: 'history',
   // 初始加载静态路由
   routes: constantRoutes
 })

@@ -16,7 +16,7 @@
         mode="vertical"
       >
         <!-- 渲染每个路由为菜单项 -->
-        <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" />
       </el-menu>
     </el-scrollbar>
   </div>

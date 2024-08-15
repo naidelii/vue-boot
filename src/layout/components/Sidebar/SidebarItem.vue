@@ -93,7 +93,7 @@ export default {
       }
       return false
     },
-    // 解析路径，如果是外部链接直接返回，否则拼接 basePath 和 routePath（跳转时应该是父path + 子path）
+    // 解析路径，如果是外部链接直接返回，否则拼接 basePath 和 routePath（跳转时默认是是父path + 子path）
     resolvePath(routePath) {
       if (isExternal(routePath)) {
         return routePath
