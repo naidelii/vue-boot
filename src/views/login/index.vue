@@ -51,7 +51,7 @@ export default {
         captcha: [{ required: true, message: '验证码不能为空', trigger: 'blur' }]
       },
       // 验证码图片
-      captchaPath: require('@/assets/login/errorCode.png')
+      captchaPath: require('@/assets/login/404.png')
     }
   },
   created() {

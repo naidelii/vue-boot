@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { ErrorEnum } from '@/utils/errorCode'
+import { ErrorEnum } from '@/utils/index'
 
 // 创建 axios 实例
 const service = axios.create({
@@ -83,7 +83,7 @@ service.interceptors.response.use(
   // 响应拦截器异常处理
   error => {
     Message({
-      message: ErrorEnum.DEFAULT.code.message,
+      message: ErrorEnum.DEFAULT.message,
       type: 'error',
       duration: 3 * 1000
     })
