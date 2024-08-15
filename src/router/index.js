@@ -19,7 +19,7 @@ export const constantRoutes = [
 
   {
     path: '/404',
-    component: () => import('@/views/404'),
+    component: () => import('@/views/error/404'),
     // 该路由不在菜单中显示
     hidden: true
   },

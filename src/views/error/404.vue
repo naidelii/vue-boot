@@ -9,15 +9,11 @@
       </div>
       <div class="bullshit">
         <div class="bullshit__oops">哎呀!</div>
-        <div class="bullshit__info">
-          版权所有
-          <a style="color: #20a0ff" href="" target="_blank">xxxx</a>
-        </div>
         <div class="bullshit__headline">{{ message }}</div>
         <div class="bullshit__info">
-          请检查您输入的URL是否正确，或点击下方按钮返回首页。
+          对不起，您正在寻找的页面不存在。尝试检查URL的错误，然后按浏览器上的刷新按钮或尝试在我们的应用程序中找到其他内容。
         </div>
-        <a href="" class="bullshit__return-home">回到首页</a>
+        <router-link to="/" class="bullshit__return-home"> 返回首页 </router-link>
       </div>
     </div>
   </div>
@@ -29,7 +25,7 @@ export default {
   name: 'Page404',
   computed: {
     message() {
-      return '站长说你不能进入这个页面...'
+      return '找不到网页！'
     }
   }
 }
