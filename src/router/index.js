@@ -37,9 +37,6 @@ export const constantRoutes = [
   }
 ]
 
-// 用于存放动态路由
-export const asyncRoutes = []
-
 const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
   // 初始加载静态路由

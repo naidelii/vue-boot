@@ -19,7 +19,7 @@ const mutations = {
 
 const actions = {
   // 用户登录
-  login({ commit }, userInfo) {
+  login(context, userInfo) {
     return new Promise((resolve, reject) => {
       // 调用login请求
       login(userInfo).then(resp => {

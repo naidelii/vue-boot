@@ -41,10 +41,14 @@ router.beforeEach(async(to, from, next) => {
     try {
       // 尝试获取用户信息
       await store.dispatch('user/getInfo')
-      // 获取成功，直接放行
-      next()
+      // 获取用户拥有的菜单列表
+      const accessRoutes = await store.dispatch('permission/generateRoutes')
+      // 加入router
+      router.addRoutes([...accessRoutes, { path: '*', redirect: '/404', hidden: true }])
+      // 获取成功，直接放行（hack方法 确保addRoutes已完成）
+      next({ ...to, replace: true })
     } catch (error) {
-      console.log('err')
+      console.log('router.beforeEach-error', error)
       // 如果获取信息失败，清除 token 并重定向到登录页面重新登录
       await store.dispatch('user/fedLogOut')
       next(`/login?redirect=${to.path}`)
