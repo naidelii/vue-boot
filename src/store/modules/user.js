@@ -48,7 +48,7 @@ const actions = {
     })
   },
 
-  // user logout
+  // 登出
   logout({ commit }) {
     return new Promise((resolve, reject) => {
       // 调用logout方法
@@ -64,6 +64,17 @@ const actions = {
       }).catch(error => {
         reject(error)
       })
+    })
+  },
+  // 前端登出
+  fedLogOut({ commit }) {
+    return new Promise(resolve => {
+      // 清空state中的用户信息
+      commit('SET_NAME', '')
+      commit('SET_AVATAR', '')
+      // 清空本地缓存的token
+      removeToken()
+      resolve()
     })
   }
 }
