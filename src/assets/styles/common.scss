@@ -1,0 +1,13 @@
+/**
+* 通用css样式布局处理
+*/
+
+// 操作按钮区域 和表单之间的距离
+.app-actions-section {
+  margin-bottom: 8px;
+}
+
+// 查询区域和 操作按钮区域的距离
+.el-form .el-form-item {
+  margin-bottom: 18px;
+}

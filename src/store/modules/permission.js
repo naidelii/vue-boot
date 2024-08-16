@@ -1,4 +1,4 @@
-import { getMenuList } from '@/api/permission'
+import { getMenuList } from '@/api/system/permission'
 import { constantRoutes } from '@/router'
 import Layout from '@/layout'
 

@@ -1,4 +1,4 @@
-import { getAction } from '@/api/manager'
+import { getAction } from '@/utils/action'
 
 export default {
   data() {
@@ -24,7 +24,14 @@ export default {
     this.loadData()
   },
   methods: {
-    searchQuery() {
+    // 查询操作
+    handleQuery() {
+      this.loadData()
+    },
+    // 重置查询条件
+    resetQuery() {
+      this.queryParam = {}
+      this.ipagination.current = 1
       this.loadData()
     },
     // 加载数据列表
@@ -63,6 +70,20 @@ export default {
     handleCurrentChange(val) {
       this.ipagination.current = val
       this.loadData()
+    },
+    // 新增操作
+    handleAdd() {
+      // 调用子组件的add()方法
+      this.$refs.modalForm.add()
+    },
+    // 编辑操作
+    handleEdit(data) {
+      // 调用子组件的edit()方法
+      this.$refs.modalForm.edit(data)
+    },
+    // 删除操作
+    handleDelele(id) {
+
     }
   }
 }

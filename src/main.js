@@ -3,10 +3,11 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // 引入 Normalize.css，它是一个现代的替代 CSS 重置的方法
 
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // 引入 Element UI 的中文语言包
 
-import '@/styles/index.scss' // 引入全局样式
+import '@/assets/styles/index.scss' // 引入全局样式
+import '@/assets/styles/common.scss'
+import 'element-ui/lib/theme-chalk/index.css'
 
 import App from './App' // 引入根组件 App.vue
 import store from './store' // 引入 Vuex 状态管理

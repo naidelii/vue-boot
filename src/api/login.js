@@ -1,4 +1,4 @@
-import { getAction, postAction } from '@/api/manager'
+import { getAction, postAction } from '@/utils/action'
 
 export function getCaptcha(params) {
   return getAction('/auth/captcha', params)

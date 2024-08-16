@@ -4,17 +4,17 @@
       <div class="site-content">
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
-          <el-form ref="dataForm" :model="dataForm" :rules="dataRule" status-icon @keyup.enter.native="handleLogin()">
+          <el-form ref="loginForm" :model="loginForm" :rules="dataRule" status-icon>
             <el-form-item prop="username">
-              <el-input v-model="dataForm.username" placeholder="帐号" />
+              <el-input v-model="loginForm.username" placeholder="帐号" />
             </el-form-item>
             <el-form-item prop="password">
-              <el-input v-model="dataForm.password" type="password" placeholder="密码" />
+              <el-input v-model="loginForm.password" type="password" placeholder="密码" />
             </el-form-item>
             <el-form-item prop="captcha">
               <el-row :gutter="20">
                 <el-col :span="14">
-                  <el-input v-model="dataForm.captcha" placeholder="验证码" />
+                  <el-input v-model="loginForm.captcha" placeholder="验证码" />
                 </el-col>
                 <el-col :span="10" class="login-captcha">
                   <div class="loginCodeImg" @click="getCaptcha">
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       loading: false,
-      dataForm: {
+      loginForm: {
         username: '',
         password: '',
         realKey: '',
@@ -50,8 +50,7 @@ export default {
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
         captcha: [{ required: true, message: '验证码不能为空', trigger: 'blur' }]
       },
-      // 验证码图片
-      captchaPath: require('@/assets/login/404.png')
+      captchaPath: ''
     }
   },
   created() {
@@ -60,13 +59,11 @@ export default {
   methods: {
     // 提交表单
     handleLogin() {
-      this.$refs.dataForm.validate(valid => {
-        if (!valid) {
-          return
-        }
+      this.$refs.loginForm.validate(valid => {
+        if (!valid) return
         // 执行登录
         this.loading = true
-        this.$store.dispatch('user/login', this.dataForm).then(() => {
+        this.$store.dispatch('user/login', this.loginForm).then(() => {
           this.$router.push({ path: '/' })
         }).finally(() => {
           this.loading = false
@@ -75,10 +72,13 @@ export default {
     },
     // 获取验证码
     getCaptcha() {
-      const currdatetime = new Date().getTime()
-      getCaptcha({ 'key': currdatetime }).then(resp => {
+      const key = Date.now()
+      getCaptcha({ key }).then(resp => {
         this.captchaPath = 'data:image/png;base64,' + resp.data.img
-        this.dataForm.realKey = resp.data.realKey
+        this.loginForm.realKey = resp.data.realKey
+      }).catch(() => {
+        // 如果获取失败，保留默认的404图片
+        this.captchaPath = require('@/assets/login/404.png')
       })
     }
   }

@@ -1,4 +1,4 @@
-import { getInfo } from '@/api/user'
+import { getCurrentUser } from '@/api/system/user'
 import { login, logout } from '@/api/login'
 import { setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -34,10 +34,10 @@ const actions = {
   },
 
   // 获取用户信息
-  getInfo({ commit }) {
+  getCurrentUser({ commit }) {
     return new Promise((resolve, reject) => {
       // 调用获取用户信息的接口
-      getInfo().then(resp => {
+      getCurrentUser().then(resp => {
         const { username, avatar } = resp.data
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)

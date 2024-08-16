@@ -40,7 +40,7 @@ router.beforeEach(async(to, from, next) => {
   } else {
     try {
       // 尝试获取用户信息
-      await store.dispatch('user/getInfo')
+      await store.dispatch('user/getCurrentUser')
       // 获取用户拥有的菜单列表
       const accessRoutes = await store.dispatch('permission/generateRoutes')
       // 加入router
