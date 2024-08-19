@@ -1,4 +1,4 @@
-import { getAction } from '@/utils/action'
+import { getAction, postAction } from '@/utils/action'
 
 export default {
   data() {
@@ -9,11 +9,12 @@ export default {
       loading: false,
       // 数据源
       dataSource: [],
+      // 多选数据
+      selectedItems: [],
       // 分页参数
       ipagination: {
         current: 1,
         pageSize: 10,
-        pageSizeOptions: ['10', '20', '30'],
         total: 0
       }
     }
@@ -38,10 +39,7 @@ export default {
     loadData() {
       // 如果没有设置list请求路径，则提示
       if (!this.url.list) {
-        this.$message({
-          message: '请设置url.list属性!',
-          type: 'error'
-        })
+        this.$message.error('请设置url.list属性!')
         return
       }
       this.loading = true
@@ -51,24 +49,20 @@ export default {
         pageNo: this.ipagination.current,
         pageSize: this.ipagination.pageSize
       }
+      // 发送请求
       getAction(this.url.list, params).then(resp => {
         const { data } = resp
         this.dataSource = data.records
         // 数据总数
         this.ipagination.total = data.total
+      }).catch(e => {
+        this.$message.error('操作失败，请稍微再试')
       }).finally(() => {
         this.loading = false
       })
     },
-    // 调整分页数量
-    handleSizeChange(val) {
-      this.ipagination.current = 1
-      this.ipagination.pageSize = val
-      this.loadData()
-    },
-    // 切换页码
-    handleCurrentChange(val) {
-      this.ipagination.current = val
+    // 新增/修改 成功时，重载列表
+    modalFormSuccess() {
       this.loadData()
     },
     // 新增操作
@@ -82,8 +76,43 @@ export default {
       this.$refs.modalForm.edit(data)
     },
     // 删除操作
-    handleDelele(id) {
-
+    handleDelete(id) {
+      this.$confirm(`是否确认删除编号为"${id}"的数据项？`, '提示').then(() => {
+        // 执行删除操作
+        this.doHandleDelete([id])
+      })
+    },
+    // 批量删除操作
+    handleBatchDelete() {
+      const ids = this.selectedItems
+      if (!ids || ids.length === 0) {
+        this.$message.error('当前未选择要删除的数据！')
+        return
+      }
+      this.$confirm(`确定对[id=${ids.join(',')}]进行批量删除操作?`, '提示').then(() => {
+        this.doHandleDelete(ids)
+      })
+    },
+    // 批量删除请求
+    doHandleDelete(ids) {
+      if (!this.url.delete) {
+        this.$message.error('请设置url.delete属性!')
+        return
+      }
+      this.loading = true
+      postAction(this.url.delete, ids).then(resp => {
+        this.$message.success('操作成功')
+        // 重新获取列表数据
+        this.resetQuery()
+      }).catch(error => {
+        this.$message.error(error.message)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    // 多选
+    handleSelectionChange(data) {
+      this.selectedItems = data.map(item => item.id)
     }
   }
 }

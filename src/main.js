@@ -16,6 +16,12 @@ import router from './router' // 引入 Vue Router 路由配置
 import '@/icons' // 引入图标
 import '@/permission' // 引入权限控制
 
+// 分页组件
+import Pagination from '@/components/Pagination'
+
+// 全局挂载
+Vue.component('Pagination', Pagination)
+
 // 将 ElementUI 的语言设置为中文
 Vue.use(ElementUI, { locale })
 

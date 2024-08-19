@@ -70,12 +70,7 @@ service.interceptors.response.use(
         })
         break
       default:
-        // 打印异常信息
-        Message({
-          message: errorMsg,
-          type: 'error',
-          duration: 3 * 1000
-        })
+        // 除了401和403异常主动提示错误，其他的交由前端处理
         break
     }
     return Promise.reject(new Error(errorMsg))

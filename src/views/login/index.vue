@@ -4,7 +4,7 @@
       <div class="site-content">
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
-          <el-form ref="loginForm" :model="loginForm" :rules="dataRule" status-icon>
+          <el-form ref="loginForm" :model="loginForm" :rules="dataRule" status-icon @keyup.enter.native="handleLogin">
             <el-form-item prop="username">
               <el-input v-model="loginForm.username" placeholder="帐号" />
             </el-form-item>
@@ -24,7 +24,7 @@
               </el-row>
             </el-form-item>
             <el-form-item>
-              <el-button :loading="loading" class="login-btn-submit" type="primary" @click="handleLogin()">登录</el-button>
+              <el-button :loading="loading" class="login-btn-submit" type="primary" @click="handleLogin">登录</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -85,7 +85,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .site-wrapper.site-page--login {
   position: absolute;
   top: 0;

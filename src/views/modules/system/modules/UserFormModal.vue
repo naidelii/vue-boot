@@ -52,7 +52,7 @@
       <!-- 操作按钮 -->
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleCancel">取 消</el-button>
-        <el-button type="primary" @click="handleSubmit">确 定</el-button>
+        <el-button type="primary" :loading="loading" @click="handleSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -61,12 +61,16 @@
 <script>
 import { getUserById } from '@/api/system/user'
 import { getRoleList } from '@/api/system/role'
+import { postAction } from '@/utils/action'
 export default {
   name: 'UserFormModal',
   components: {},
   data() {
     return {
+      // 模态框是否打开
       visible: false,
+      // 添加loading状态
+      loading: false,
       // 标题
       title: '',
       // 表单的数据
@@ -99,6 +103,7 @@ export default {
           { pattern: /^[^<>"'|\\]+$/, message: "不能包含非法字符：< > \" ' \\\ |", trigger: 'blur' }
         ],
         email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         mobile: [
@@ -107,13 +112,23 @@ export default {
         ]
       },
       url: {
-
+        save: '/sys/user/save',
+        update: '/sys/user/update'
       }
     }
   },
   created() {
   },
   methods: {
+    // 获取角色列表
+    async fetchRoleOptions() {
+      try {
+        const roleResp = await getRoleList()
+        this.roleOptions = roleResp.data
+      } catch (error) {
+        this.$message.error('获取角色列表失败')
+      }
+    },
     resetData(title, data = {}) {
       this.title = title
       this.visible = true
@@ -121,8 +136,7 @@ export default {
     },
     async add() {
       // 查询 角色信息
-      const roleResp = await getRoleList()
-      this.roleOptions = roleResp.data
+      await this.fetchRoleOptions()
       // 新增时的默认数据
       const defaultData = {
         username: '',
@@ -137,8 +151,7 @@ export default {
     },
     async edit(data) {
       // 查询 角色信息
-      const roleResp = await getRoleList()
-      this.roleOptions = roleResp.data
+      await this.fetchRoleOptions()
       // 查询用户信息
       const resp = await getUserById({ id: data.id })
       const { ...dataModel } = resp.data
@@ -156,8 +169,20 @@ export default {
         if (!valid) {
           return false
         }
+        // 开始加载
+        this.loading = true
         // 发起请求
-        console.log('handleSubmit', this.dataForm)
+        const url = this.dataForm.id ? this.url.update : this.url.save
+        postAction(url, this.dataForm).then(resp => {
+          this.$message.success('操作成功')
+          // 关闭当前弹窗
+          this.handleCancel()
+          // 通知父组件操作成功
+          this.$emit('success')
+        }).finally(() => {
+          // 请求完成后停止加载
+          this.loading = false
+        })
       })
     }
   }
