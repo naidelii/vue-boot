@@ -1,4 +1,4 @@
-import { getMenuList } from '@/api/system/permission'
+import { getUserMenuList } from '@/api/system/permission'
 import { constantRoutes } from '@/router'
 import Layout from '@/layout'
 
@@ -20,7 +20,7 @@ const actions = {
   generateRoutes({ commit }) {
     return new Promise((resolve, reject) => {
       // 获取用户拥有的菜单列表
-      getMenuList().then(resp => {
+      getUserMenuList().then(resp => {
         const asyncRoutes = handleMenu(resp.data)
         // 设置进vuex
         commit('SET_ROUTES', asyncRoutes)

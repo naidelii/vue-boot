@@ -70,7 +70,7 @@
 
 <script>
 import listMixin from '@/mixins/listMixin'
-import userFormModal from './modules/UserFormModal.vue'
+import userFormModal from './modules/UserFormModal'
 
 export default {
   components: {
@@ -79,8 +79,6 @@ export default {
   mixins: [listMixin],
   data() {
     return {
-      // 多选项
-      selectedItems: [],
       url: {
         list: '/sys/user/listPage',
         delete: '/sys/user/deleteBatch'

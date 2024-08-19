@@ -123,20 +123,20 @@ export default {
     // 获取角色列表
     async fetchRoleOptions() {
       try {
-        const roleResp = await getRoleList()
-        this.roleOptions = roleResp.data
+        const resp = await getRoleList()
+        this.roleOptions = resp.data
       } catch (error) {
         this.$message.error('获取角色列表失败')
       }
     },
-    resetData(title, data = {}) {
-      this.title = title
-      this.visible = true
-      this.dataForm = data
-    },
-    async add() {
-      // 查询 角色信息
+    async resetData(title, data = {}) {
+      // 查询角色信息
       await this.fetchRoleOptions()
+      this.title = title
+      this.dataForm = data
+      this.visible = true
+    },
+    add() {
       // 新增时的默认数据
       const defaultData = {
         username: '',
@@ -150,8 +150,6 @@ export default {
       this.resetData('新增', defaultData)
     },
     async edit(data) {
-      // 查询 角色信息
-      await this.fetchRoleOptions()
       // 查询用户信息
       const resp = await getUserById({ id: data.id })
       const { ...dataModel } = resp.data
@@ -166,9 +164,7 @@ export default {
       // 触发表单验证
       this.$refs.form.validate(valid => {
         // 表单校验未通过
-        if (!valid) {
-          return false
-        }
+        if (!valid) return false
         // 开始加载
         this.loading = true
         // 发起请求
@@ -179,6 +175,8 @@ export default {
           this.handleCancel()
           // 通知父组件操作成功
           this.$emit('success')
+        }).catch(error => {
+          this.$message.console.error(error.message)
         }).finally(() => {
           // 请求完成后停止加载
           this.loading = false
