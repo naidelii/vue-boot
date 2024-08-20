@@ -21,9 +21,7 @@
 
       <el-table-column prop="type" header-align="center" align="center" label="类型">
         <template slot-scope="{ row }">
-          <el-tag v-if="row.type === 0" size="small">目录</el-tag>
-          <el-tag v-else-if="row.type === 1" size="small" type="success">菜单</el-tag>
-          <el-tag v-else-if="row.type === 2" size="small" type="info">按钮</el-tag>
+          <status-tag :value="row.type" :options="typeOptions" />
         </template>
       </el-table-column>
 
@@ -45,11 +43,19 @@
 
 <script>
 import listMixin from '@/mixins/listMixin'
+import StatusTag from '@/components/StatusTag'
 export default {
-  components: {},
+  components: {
+    StatusTag
+  },
   mixins: [listMixin],
   data() {
     return {
+      typeOptions: [
+        { value: 0, text: '目录', type: '' },
+        { value: 1, text: '菜单', type: 'success' },
+        { value: 2, text: '按钮', type: 'info' }
+      ],
       url: {
         list: '/sys/permission/tree',
         delete: '/sys/permission/delete'

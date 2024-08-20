@@ -39,8 +39,7 @@
       <el-table-column prop="mobile" header-align="center" align="center" label="手机号" />
       <el-table-column prop="status" header-align="center" align="center" width="100" label="状态">
         <template slot-scope="{ row }">
-          <el-tag v-if="row.status === 0" size="small" type="danger">禁用</el-tag>
-          <el-tag v-else size="small">正常</el-tag>
+          <status-tag :value="row.status" :options="statusOptions" />
         </template>
       </el-table-column>
       <el-table-column prop="createTime" header-align="center" align="center" width="180" label="创建时间" />
@@ -71,14 +70,19 @@
 <script>
 import listMixin from '@/mixins/listMixin'
 import userFormModal from './modules/UserFormModal'
-
+import StatusTag from '@/components/StatusTag'
 export default {
   components: {
-    userFormModal
+    userFormModal,
+    StatusTag
   },
   mixins: [listMixin],
   data() {
     return {
+      statusOptions: [
+        { value: 0, text: '禁用', type: 'danger' },
+        { value: 1, text: '正常', type: '' }
+      ],
       url: {
         list: '/sys/user/listPage',
         delete: '/sys/user/deleteBatch'
