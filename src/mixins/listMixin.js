@@ -56,16 +56,10 @@ export default {
       // 发送请求
       getAction(this.url.list, params).then(resp => {
         const { data } = resp
-        // 判断数据结构是否包含分页信息
-        if (data.records && data.total !== undefined) {
-          // 有分页数据
-          this.dataSource = data.records
-          // 数据总数
-          this.ipagination.total = data.total
-        } else {
-          // 非分页数据
-          this.dataSource = data
-        }
+        // 有分页数据
+        this.dataSource = data.records
+        // 数据总数
+        this.ipagination.total = data.total
       }).catch(e => {
         this.$message.error('操作失败，请稍微再试')
       }).finally(() => {

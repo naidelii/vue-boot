@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { getMenuTree } from '@/api/system/permission'
+import { getPermissionListToTree } from '@/api/system/permission'
 import { postAction } from '@/utils/action'
 import { getRoleById } from '@/api/system/role'
 export default {
@@ -61,9 +61,9 @@ export default {
   },
   created() { },
   methods: {
-    async fetchMenuList() {
+    async fetchtPermissionList() {
       try {
-        const resp = await getMenuTree()
+        const resp = await getPermissionListToTree()
         this.menuList = resp.data
       } catch (error) {
         this.$message.error('获取菜单列表失败')
@@ -73,7 +73,7 @@ export default {
       // 重置选中的菜单
       this.resetChecked()
       // 查询菜单信息
-      await this.fetchMenuList()
+      await this.fetchtPermissionList()
       this.title = title
       this.dataForm = data
       this.visible = true
