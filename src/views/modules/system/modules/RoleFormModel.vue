@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog :title="title" :visible.sync="visible" :close-on-click-modal="false" append-to-body width="480px">
+      <!-- 表单区域 -->
       <el-form ref="form" :model="dataForm" :rules="rules" label-width="80px">
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="dataForm.roleName" placeholder="角色名称" />
@@ -15,6 +16,8 @@
           <el-input v-model="dataForm.description" placeholder="描述" />
         </el-form-item>
       </el-form>
+      <!-- 表单区域-END -->
+
       <!-- 操作按钮 -->
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleCancel">取 消</el-button>
@@ -123,6 +126,7 @@ export default {
         this.loading = true
         // 发起请求
         const url = this.dataForm.id ? this.url.update : this.url.save
+        // 请求的数据
         const reqData = {
           ...this.dataForm,
           permissionIds: [
@@ -130,6 +134,7 @@ export default {
             ...this.$refs.menuListTree.getHalfCheckedKeys()
           ]
         }
+        // 发送请求
         postAction(url, reqData).then(resp => {
           this.$message.success('操作成功')
           // 关闭当前弹窗

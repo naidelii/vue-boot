@@ -13,7 +13,7 @@ import App from './App' // 引入根组件 App.vue
 import store from './store' // 引入 Vuex 状态管理
 import router from './router' // 引入 Vue Router 路由配置
 
-import '@/icons' // 引入图标
+import '@/assets/icons' // 引入图标
 import '@/permission' // 引入权限控制
 
 // 分页组件

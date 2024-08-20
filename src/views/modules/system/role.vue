@@ -22,7 +22,7 @@
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleBatchDelete">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete()">批量删除</el-button>
       </el-col>
     </el-row>
     <!-- 操作按钮区域-END -->

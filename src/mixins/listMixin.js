@@ -25,6 +25,10 @@ export default {
     this.loadData()
   },
   methods: {
+    // 新增/修改 成功时，重载列表
+    modalFormSuccess() {
+      this.loadData()
+    },
     // 查询操作
     handleQuery() {
       this.loadData()
@@ -52,18 +56,21 @@ export default {
       // 发送请求
       getAction(this.url.list, params).then(resp => {
         const { data } = resp
-        this.dataSource = data.records
-        // 数据总数
-        this.ipagination.total = data.total
+        // 判断数据结构是否包含分页信息
+        if (data.records && data.total !== undefined) {
+          // 有分页数据
+          this.dataSource = data.records
+          // 数据总数
+          this.ipagination.total = data.total
+        } else {
+          // 非分页数据
+          this.dataSource = data
+        }
       }).catch(e => {
         this.$message.error('操作失败，请稍微再试')
       }).finally(() => {
         this.loading = false
       })
-    },
-    // 新增/修改 成功时，重载列表
-    modalFormSuccess() {
-      this.loadData()
     },
     // 新增操作
     handleAdd() {
@@ -77,19 +84,20 @@ export default {
     },
     // 删除操作
     handleDelete(id) {
-      this.$confirm(`是否确认删除编号为"${id}"的数据项？`, '提示').then(() => {
-        // 执行删除操作
-        this.doHandleDelete([id])
-      })
-    },
-    // 批量删除操作
-    handleBatchDelete() {
-      const ids = this.selectedItems
-      if (!ids || ids.length === 0) {
+      // 操作类型（true：单个删除，false：批量删除）
+      const actionType = !!id
+      const ids = actionType ? [id] : this.selectedItems.map(item => item.id)
+      if (ids.length === 0) {
         this.$message.error('当前未选择要删除的数据！')
         return
       }
-      this.$confirm(`确定对[id=${ids.join(',')}]进行批量删除操作?`, '提示').then(() => {
+      // 删除类型
+      const deleteType = actionType ? '删除' : '批量删除'
+      const title = `是否确认【${deleteType}】【ID: ${ids.join(', ')}】的数据项？`
+      this.$confirm(title, '系统提示', {
+        type: 'warning'
+      }).then(() => {
+        // 执行删除操作
         this.doHandleDelete(ids)
       })
     },
@@ -103,16 +111,16 @@ export default {
       postAction(this.url.delete, ids).then(resp => {
         this.$message.success('操作成功')
         // 重新获取列表数据
-        this.resetQuery()
+        this.loadData()
       }).catch(error => {
-        this.$message.error(error.message)
+        this.$message.error(`删除失败: ${error.message}`)
       }).finally(() => {
         this.loading = false
       })
     },
     // 多选
     handleSelectionChange(data) {
-      this.selectedItems = data.map(item => item.id)
+      this.selectedItems = data
     }
   }
 }
