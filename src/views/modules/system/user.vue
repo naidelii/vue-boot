@@ -3,8 +3,8 @@
   <div class="app-container">
     <!-- 查询区域 -->
     <el-form ref="queryForm" :model="queryParam" :inline="true">
-      <el-form-item label="角色名称" prop="username">
-        <el-input v-model="queryParam.username" placeholder="请输入用户名" clearable size="small" style="width: 200px" />
+      <el-form-item prop="username" label="用户名">
+        <el-input v-model="queryParam.username" placeholder="请输入用户名" size="small" clearable style="width: 200px" />
       </el-form-item>
 
       <!-- 查询区域-操作按钮 -->
@@ -45,13 +45,12 @@
       <el-table-column prop="createTime" align="center" width="160" label="创建时间" />
 
       <!-- 操作列 -->
-      <el-table-column class-name="small-padding fixed-width" align="center" width="160" label="操作">
+      <el-table-column align="center" width="170" label="操作">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(row)">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(row.id)">删除</el-button>
-
-          <!-- 更多列 -->
-          <el-dropdown size="mini" @command="command => handleCommand(command, row)">
+          <el-dropdown class="action-more-dropdown" size="mini" @command="command => handleCommand(command, row)">
+            <!-- 更多列（样式修改在common.scss里面） -->
             <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="resetPassword" icon="el-icon-key">重置密码</el-dropdown-item>
@@ -75,7 +74,6 @@
 
     <!-- 重置密码组件 -->
     <reset-password-dialog ref="resetPassword" />
-
   </div>
 </template>
 
@@ -119,32 +117,11 @@ export default {
     // 重置密码
     handleResetPassword(row) {
       this.$refs.resetPassword.init(row)
-      // const promptOptions = {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   closeOnClickModal: false,
-      //   inputPattern: /^.{5,20}$/,
-      //   inputErrorMessage: '用户密码长度必须介于 5 和 20 之间',
-      //   inputValidator: (value) => {
-      //     if (/<|>|"|'|\||\\/.test(value)) {
-      //       return "不能包含非法字符：< > \" ' \\\ |"
-      //     }
-      //   }
-      // }
-      // const title = `请输入 "${row.username}" 的新密码`
-      // this.$prompt(title, '提示', promptOptions).then(({ value }) => {
-      //   // 发送请求
-      //   resetPassword(row.id, value).then(resp => {
-      //     this.$message.success('操作成功')
-      //   })
-      // }).catch(error => {
-      //   console.log('error', error)
-      //   this.$message.error('操作失败')
-      // })
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 </style>

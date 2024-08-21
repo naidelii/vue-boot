@@ -2,7 +2,7 @@
 * 通用css样式布局处理
 */
 
-// 操作按钮区域 和表单之间的距离
+// 表单上面的操作按钮区域 和表单之间的距离
 .app-actions-section {
   margin-bottom: 8px;
 }
@@ -12,3 +12,17 @@
   margin-bottom: 18px;
 }
 
+// 表单-操作按钮样式
+.action-buttons-group {
+
+  // 调整更多按钮与前一个按钮的间距
+  .el-dropdown {
+    margin-left: 12px; 
+  }
+}
+
+// 表单-操作按钮样式
+.action-more-dropdown {
+  // 调整更多按钮与前一个按钮的间距
+  margin-left: 8px; 
+}

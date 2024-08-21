@@ -3,8 +3,8 @@
   <div class="app-container">
     <!-- 查询区域 -->
     <el-form ref="queryForm" :model="queryParam" :inline="true">
-      <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="queryParam.roleName" placeholder="请输入角色名称" clearable size="small" style="width: 200px" />
+      <el-form-item prop="roleName" label="角色名">
+        <el-input v-model="queryParam.roleName" placeholder="请输入角色名" size="small" clearable style="width: 200px" />
       </el-form-item>
 
       <!-- 查询区域-操作按钮 -->
@@ -30,19 +30,19 @@
     <!-- table区域 -->
     <el-table v-loading="loading" :data="dataSource" border @selection-change="handleSelectionChange">
       <!-- 多选列 -->
-      <el-table-column type="selection" header-align="center" align="center" width="50" />
+      <el-table-column type="selection" align="center" width="50" />
 
       <!-- 数据列 -->
-      <el-table-column prop="id" header-align="center" align="center" width="180" label="ID" />
-      <el-table-column prop="roleName" header-align="center" align="center" label="角色名称" />
-      <el-table-column prop="roleCode" header-align="center" align="center" label="角色编码" />
-      <el-table-column prop="description" header-align="center" align="center" label="描述" />
+      <el-table-column prop="id" align="center" width="180" label="ID" />
+      <el-table-column prop="roleName" align="center" label="角色名" />
+      <el-table-column prop="roleCode" align="center" label="角色编码" />
+      <el-table-column prop="description" align="center" label="描述" />
 
       <!-- 操作列 -->
-      <el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
+      <el-table-column align="center" width="160" label="操作">
         <template slot-scope="{ row }">
-          <el-button type="text" size="small" @click="handleEdit(row)">修改</el-button>
-          <el-button type="text" size="small" @click="handleDelete(row.id)">删除</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

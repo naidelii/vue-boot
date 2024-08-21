@@ -12,28 +12,28 @@
     <!-- table区域 -->
     <el-table v-loading="loading" :data="dataSource" border row-key="id">
       <!-- 数据列 -->
-      <el-table-column prop="name" header-align="center" align="center" label="菜单名称" />
-      <el-table-column header-align="center" align="center" label="图标" width="120">
+      <el-table-column prop="name" align="center" label="菜单名称" />
+      <el-table-column prop="icon" align="center" width="120" label="图标">
         <template slot-scope="{ row }">
           <svg-icon :icon-class="row.icon" />
         </template>
       </el-table-column>
-      <el-table-column prop="sortOrder" header-align="center" align="center" label="排序" width="120" />
+      <el-table-column prop="sortOrder" align="center" width="120" label="排序" />
 
-      <el-table-column prop="type" header-align="center" align="center" label="类型" width="120">
+      <el-table-column prop="type" align="center" width="120" label="类型">
         <template slot-scope="{ row }">
           <status-tag :value="row.type" :options="typeOptions" />
         </template>
       </el-table-column>
 
-      <el-table-column prop="url" header-align="center" align="center" :show-overflow-tooltip="true" label="组件路径" />
-      <el-table-column prop="perms" header-align="center" align="center" :show-overflow-tooltip="true" label="权限标识" />
+      <el-table-column prop="url" align="center" label="组件路径" />
+      <el-table-column prop="perms" align="center" label="权限标识" />
 
       <!-- 操作列 -->
-      <el-table-column fixed="right" header-align="center" align="center" width="160" label="操作">
+      <el-table-column align="center" width="160" label="操作">
         <template slot-scope="{ row }">
-          <el-button type="text" size="small" @click="handleEdit(row)">修改</el-button>
-          <el-button type="text" size="small" @click="handleDelete(row.id)">删除</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(row)">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
