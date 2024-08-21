@@ -1,9 +1,11 @@
 <template>
   <div class="tree-select">
-    <el-select ref="select" v-model="selectedLabel" :placeholder="placeholder">
+    <!-- 使用 el-select 作为下拉框 -->
+    <el-select ref="select" v-model="label" :placeholder="placeholder">
+      <!-- 自定义 el-option，将 el-tree 作为下拉内容 -->
       <el-option class="tree-select-option" value="">
-        <!-- 使用 el-tree 作为 select 的 dropdown 内容 -->
-        <el-tree ref="tree" :data="treeData" :props="props" :node-key="nodeKey" highlight-current @node-click="handleNodeClick" />
+        <!-- 使用 el-tree 显示树形结构数据 -->
+        <el-tree ref="tree" :data="treeData" :props="treePropsConfig" :node-key="nodeKey" highlight-current @node-click="handleNodeClick" />
       </el-option>
     </el-select>
   </div>
@@ -14,53 +16,55 @@ export default {
   name: 'TreeSelect',
   components: {},
   props: {
+    // 树形数据，必须传递
     treeData: {
       type: Array,
       required: true
     },
-    // 可以是你想要绑定的数据类型
     value: {
       type: Object,
       required: true
     },
+    // 占位符文本，默认为“请选择”
     placeholder: {
       type: String,
       default: '请选择'
     },
+    // 节点的唯一标识key
     nodeKey: {
       type: String,
       default: 'id'
     },
-    props: {
+    // el-tree 组件的配置项
+    treePropsConfig: {
       type: Object,
-      default() {
-        return {
-          label: 'label',
-          children: 'children'
-        }
-      }
+      default: () => ({
+        label: 'name',
+        children: 'children'
+      })
     }
   },
   data() {
     return {
-      selectedLabel: this.value.parentName
+      label: ''
     }
   },
-  created() {
+  watch: {
+    // 监听父组件传入的值的变化，并同步label
+    value: {
+      // 当组件初始化时立即执行一次
+      immediate: true,
+      handler(newVal) {
+        console.log('value', newVal)
+        this.label = newVal.name
+      }
+    }
   },
   methods: {
-    // 节点被点击
+    // 处理树形节点被点击事件
     handleNodeClick(data) {
-      // 当节点被点击时，更新 selectedLabel
-      this.selectedLabel = data.name
-      // 并通过 emit 传递给父组件，触发 input 事件更新 v-model 绑定的值
-      // 将数据传递给父组件
-      this.$emit('input', {
-        parentId: data.id,
-        parentName: data.name
-      })
-      // 设置高亮选中
-      this.$refs.tree.setCurrentKey(data.id)
+      // 更新父组件的值
+      this.$emit('input', data)
       // 关闭下拉框
       this.$refs.select.blur()
     }

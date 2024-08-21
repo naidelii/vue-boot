@@ -5,47 +5,61 @@
       <el-form ref="form" :model="dataForm" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="上级菜单" prop="parentName">
+            <el-form-item label="菜单类型" prop="type">
+              <el-radio-group v-model="dataForm.type">
+                <el-radio v-for="(item, index) in typeOptions" :key="index" :label="item.value">{{ item.text }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+
+          <el-col v-if="dataForm.type !== 0" :span="24">
+            <el-form-item label="上级菜单" prop="parent">
               <tree-select
-                v-model="treeSelectData.selectedItem"
+                v-model="treeSelectData.parent"
                 :placeholder="treeSelectData.placeholder"
                 :tree-data="treeSelectData.menuList"
-                :props="treeSelectData.menuListTreeProps"
+                :tree-props-config="treeSelectData.menuListTreeProps"
               />
             </el-form-item>
+          </el-col>
+          <!-- 菜单名称 -->
+          <el-col :span="12">
+            <el-form-item :label="menuNameLabel" prop="name">
+              <el-input v-model="dataForm.name" :placeholder="`请输入${menuNameLabel}`" />
+            </el-form-item>
+          </el-col>
 
-            <el-col :span="24">
-              <el-form-item label="菜单类型" prop="type">
-                <el-radio-group v-model="dataForm.type">
-                  <el-radio v-for="(item, index) in typeOptions" :key="index" :label="item.value">{{ item.text }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
+          <el-col :span="12">
+            <el-form-item label="显示排序" prop="sortOrder">
+              <el-input-number v-model="dataForm.sortOrder" controls-position="right" :min="0" />
+            </el-form-item>
+          </el-col>
 
-            <el-col v-if="dataForm.type !== 2" :span="24">
-              <el-form-item label="菜单图标" prop="icon">
-                <el-popover v-model="iconSelectData.visible" placement="bottom-start" width="460">
-                  <IconSelect ref="iconSelect" :active-icon="dataForm.icon" @selected="selectedIcon" />
+          <!-- 菜单图标 -->
+          <el-col v-if="dataForm.type !== 2" :span="24">
+            <el-form-item label="菜单图标" prop="icon">
+              <el-popover v-model="iconSelectData.visible" placement="bottom-start" width="460">
+                <IconSelect ref="iconSelect" :active-icon="dataForm.icon" @selected="selectedIcon" />
 
-                  <el-input slot="reference" v-model="dataForm.icon" placeholder="点击选择图标" readonly>
-                    <svg-icon v-if="dataForm.icon" slot="prefix" class="icon-prefix" :icon-class="dataForm.icon" />
-                    <i v-else slot="prefix" class="el-icon-search el-input__icon" />
-                  </el-input>
-                </el-popover>
-              </el-form-item>
-            </el-col>
+                <el-input slot="reference" v-model="dataForm.icon" placeholder="点击选择图标" readonly>
+                  <svg-icon v-if="dataForm.icon" slot="prefix" class="icon-prefix" :icon-class="dataForm.icon" />
+                  <i v-else slot="prefix" class="el-icon-search el-input__icon" />
+                </el-input>
+              </el-popover>
+            </el-form-item>
+          </el-col>
 
-            <el-col :span="12">
-              <el-form-item :label="menuNameLabel" prop="name">
-                <el-input v-model="dataForm.name" :placeholder="`请输入${menuNameLabel}`" />
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-              <el-form-item label="显示排序" prop="sortOrder">
-                <el-input-number v-model="dataForm.sortOrder" controls-position="right" :min="0" />
-              </el-form-item>
-            </el-col>
+          <!-- 组件 -->
+          <el-col v-if="dataForm.type === 1" :span="24">
+            <el-form-item label="组件路径" prop="url">
+              <el-input v-model="dataForm.url" placeholder="请输入组件路径" />
+            </el-form-item>
+          </el-col>
+          <!-- 权限编码 -->
+          <el-col v-if="dataForm.type === 2" :span="24">
+            <el-form-item label="权限编码" prop="perms">
+              <el-input v-model="dataForm.perms" placeholder="请输入权限编码" />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -61,7 +75,7 @@
 </template>
 
 <script>
-// import { postAction } from '@/utils/action'
+import { postAction } from '@/utils/action'
 import { getMenuListToTree, getPermissionById } from '@/api/system/permission'
 import TreeSelect from '@/components/TreeSelect'
 import IconSelect from '@/components/IconSelect'
@@ -88,10 +102,8 @@ export default {
         { text: '按钮权限', value: 2 }
       ],
       treeSelectData: {
-        selectedItem: {
-          parentId: '',
-          parentName: ''
-        },
+        // 父节点信息
+        parent: {},
         placeholder: '请选择上级菜单',
         menuList: [],
         menuListTreeProps: {
@@ -114,18 +126,22 @@ export default {
   computed: {
     // 计算菜单名称标签，根据不同的类型动态变化
     menuNameLabel() {
-      if (this.dataForm.type === 0) {
-        return '目录名称'
-      } else if (this.dataForm.type === 1) {
-        return '菜单名称'
-      } else if (this.dataForm.type === 2) {
-        return '按钮权限名称'
-      }
-      return ''
+      const type = this.dataForm.type
+      return type === 0 ? '目录名称' : type === 1 ? '菜单名称' : '按钮权限'
     }
   },
   created() { },
   methods: {
+    initFormData() {
+      return {
+        type: 0,
+        name: '',
+        sortOrder: 0,
+        icon: '',
+        url: '',
+        perms: ''
+      }
+    },
     async fetchtMenuList() {
       try {
         const resp = await getMenuListToTree()
@@ -142,21 +158,17 @@ export default {
       this.visible = true
     },
     add() {
+      // 设置菜单信息
+      this.treeSelectData.parent = { id: '', name: '' }
       // 新增时的默认数据
-      this.resetData('新增', {
-        name: '',
-        type: 0,
-        icon: '',
-        sortOrder: 0
-      })
+      this.resetData('新增', this.initFormData())
     },
     async edit(data) {
       // 查询菜单信息
       const resp = await getPermissionById({ id: data.id })
       const { parentId, parentName, ...dataModel } = resp.data
       // 设置菜单信息
-      this.treeSelectData.selectedItem.parentId = parentId
-      this.treeSelectData.selectedItem.parentName = parentName
+      this.treeSelectData.parent = { id: parentId, name: parentName }
       // 设置表单需要的数据
       this.resetData('编辑', dataModel)
     },
@@ -171,7 +183,25 @@ export default {
     },
     // 表单提交
     handleSubmit() {
-      console.log('this.form', this.treeSelectData.selectedItem)
+      // 触发表单验证
+      this.$refs.form.validate(async valid => {
+        // 表单校验未通过
+        if (!valid) return false
+        // 开始加载
+        this.loading = true
+        try {
+          const url = this.dataForm.id ? this.url.update : this.url.save
+          const reqData = { ...this.dataForm, parentId: this.treeSelectData.parent.id }
+          await postAction(url, reqData)
+          this.$message.success('操作成功')
+          this.handleCancel()
+          this.$emit('success')
+        } catch (error) {
+          this.$message.error(error.message)
+        } finally {
+          this.loading = false
+        }
+      })
     }
   }
 }

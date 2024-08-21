@@ -74,6 +74,8 @@ const actions = {
       commit('SET_AVATAR', '')
       // 清空本地缓存的token
       removeToken()
+      // 重置路由
+      resetRouter()
       resolve()
     })
   }

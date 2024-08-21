@@ -49,7 +49,9 @@ const router = createRouter()
 
 // 重置路由配置，通常在用户权限发生变化时使用
 export function resetRouter() {
+  // 创建新的路由实例
   const newRouter = createRouter()
+  // 将现有路由的 matcher 替换为新的 matcher
   router.matcher = newRouter.matcher
 }
 

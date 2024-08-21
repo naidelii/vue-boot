@@ -49,15 +49,12 @@ service.interceptors.response.use(
         // 显示提示信息
         Message({
           message: ErrorEnum.UNAUTHORIZED.message,
-          type: 'warning',
+          type: 'error',
           // 3秒后关闭提示
           duration: 3000,
-          onClose: () => {
-            // 提示关闭后执行重新登录操作
-            store.dispatch('user/logout').then(() => {
-              // 重新加载页面以重新实例化 vue-router 对象
-              location.reload()
-            })
+          onClose: async() => {
+            // 注销用户
+            await store.dispatch('user/logout')
           }
         })
         break
