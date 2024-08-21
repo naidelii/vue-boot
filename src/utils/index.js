@@ -56,3 +56,11 @@ export function listToTree(list, idKey = 'id', parentKey = 'parentId', childrenK
   // 返回构建好的树形结构
   return tree
 }
+
+export function getPasswordValidationRules() {
+  return [
+    { required: true, message: '用户密码不能为空', trigger: 'blur' },
+    { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' },
+    { pattern: /^[^<>"'|\\]+$/, message: "不能包含非法字符：< > \" ' \\\ |", trigger: 'blur' }
+  ]
+}

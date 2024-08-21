@@ -142,7 +142,7 @@ export default {
           // 通知父组件操作成功
           this.$emit('success')
         }).catch(error => {
-          this.$message.console.error(error.message)
+          this.$message.error(error.message)
         }).finally(() => {
           // 请求完成后停止加载
           this.loading = false

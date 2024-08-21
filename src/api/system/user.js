@@ -1,4 +1,4 @@
-import { getAction } from '@/utils/action'
+import { getAction, postAction } from '@/utils/action'
 
 /**
  * 获取当前登录用户的信息
@@ -17,3 +17,6 @@ export function getUserById(id) {
   return getAction('/sys/user/getUserById', id)
 }
 
+export function resetPassword(data) {
+  return postAction('/sys/user/resetPassword', data)
+}
