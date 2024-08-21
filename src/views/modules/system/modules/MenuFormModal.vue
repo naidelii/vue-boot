@@ -2,9 +2,10 @@
   <div>
     <el-dialog :title="title" :visible.sync="visible" :close-on-click-modal="false" append-to-body width="680px">
       <!-- 表单区域 -->
-      <el-form ref="form" :model="dataForm" :rules="rules" label-width="100px">
+      <el-form ref="form" :model="dataForm" :rules="rules" label-width="120px">
         <el-row>
-          <el-col :span="24">
+          <!-- 不让修改菜单类型 -->
+          <el-col v-if="!dataForm.id" :span="24">
             <el-form-item label="菜单类型" prop="type">
               <el-radio-group v-model="dataForm.type">
                 <el-radio v-for="(item, index) in typeOptions" :key="index" :label="item.value">{{ item.text }}</el-radio>
@@ -127,7 +128,7 @@ export default {
     // 计算菜单名称标签，根据不同的类型动态变化
     menuNameLabel() {
       const type = this.dataForm.type
-      return type === 0 ? '目录名称' : type === 1 ? '菜单名称' : '按钮权限'
+      return type === 0 ? '目录名称' : type === 1 ? '菜单名称' : '按钮/权限名称'
     }
   },
   created() { },
