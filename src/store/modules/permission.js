@@ -1,5 +1,6 @@
 import { getUserMenuList } from '@/api/system/permission'
 import { constantRoutes } from '@/router'
+import { listToTree } from '@/utils'
 import Layout from '@/layout'
 
 const state = {
@@ -38,14 +39,15 @@ const actions = {
  * @returns {Array} - 生成的路由数组
  */
 function handleMenu(menuList) {
-  return menuList.map(menu => {
-    // 转成路由组件
+  // 将后端路由，转为前端路由组件
+  menuList.forEach(menu => {
     const route = createRouteFromMenu(menu)
-    if (menu.children && menu.children.length > 0) {
-      route.children = handleMenu(menu.children)
-    }
-    return route
+    // 将route挂载到menu上，作为menu的属性
+    menu.route = route
   })
+  // 转为树形结构，使用menu.route进行组装
+  const tree = listToTree(menuList, 'id', 'parentId', 'children', menu => menu.route)
+  return tree
 }
 
 /**
@@ -54,16 +56,23 @@ function handleMenu(menuList) {
  * @returns {object} route
  */
 function createRouteFromMenu(menu) {
+  // 组件的路径
   const url = menu.url
+  // 主键（唯一的）
+  const id = menu.id
+  // 路由信息
   const route = {
-    // 如果没有url，使用（'/' + id）作为路径
-    path: url ? '/' + url : `/${menu.id}`,
-    // 如果没有url，使用id生成name
-    name: url ? url.replace('/', '-') : `route-${menu.id}`,
+    // 如果没有url，使用（id）作为路径（path必须要，大部分都是通过path进行跳转的）
+    path: url || id,
+    // name：去除开头的第一个 '/'，将剩下的转为 '-'
+    name: url ? url.replace(/^\//, '').replaceAll('/', '-') : id,
     meta: {
+      // 菜单栏的标题
       title: menu.name,
+      // 图标
       icon: menu.icon
     },
+    // 子菜单
     children: []
   }
   // 处理component（0：目录，1：菜单，2：按钮权限）
@@ -76,12 +85,12 @@ function createRouteFromMenu(menu) {
 }
 
 /**
- * 懒加载视图组件
- * @param {String} view - 视图的路径
+ * 加载视图组件
+ * @param {String} compoentPath - 组件的路径
  * @returns {Function} - 返回一个异步加载组件的函数
  */
-export const loadView = (view) => {
-  return (resolve) => require([`@/views/modules/${view}.vue`], resolve)
+export const loadView = (compoentPath) => {
+  return (resolve) => require([`@/views/modules${compoentPath}.vue`], resolve)
 }
 
 export default {
@@ -90,4 +99,3 @@ export default {
   mutations,
   actions
 }
-
