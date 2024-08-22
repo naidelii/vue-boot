@@ -22,7 +22,7 @@
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete()">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteBatch">批量删除</el-button>
       </el-col>
     </el-row>
     <!-- 操作按钮区域-END -->
@@ -97,7 +97,7 @@ export default {
       ],
       url: {
         list: '/sys/user/listPage',
-        delete: '/sys/user/deleteBatch'
+        deleteBatch: '/sys/user/deleteBatch'
       }
     }
   },
@@ -117,11 +117,20 @@ export default {
     // 重置密码
     handleResetPassword(row) {
       this.$refs.resetPassword.init(row)
+    },
+    // 手动处理
+    handleDelete(id) {
+      if (!id) {
+        this.$message.error('当前未选择要删除的数据！')
+        return
+      }
+      const title = `是否确认【删除】【ID: ${id}】的数据项？`
+      // 调用批量删除
+      this.doHandleDelete(title, [id], true)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>
