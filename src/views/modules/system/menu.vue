@@ -74,20 +74,9 @@ export default {
   methods: {
     // 重写loadData()方法
     loadData() {
-      // 如果没有设置list请求路径，则提示
-      if (!this.url.list) {
-        this.$message.error('请设置url.list属性!')
-        return
-      }
       this.loading = true
-      // 构造查询条件
-      const params = {
-        ...this.queryParam,
-        pageNo: this.ipagination.current,
-        pageSize: this.ipagination.pageSize
-      }
       // 发送请求
-      getAction(this.url.list, params).then(resp => {
+      getAction(this.url.list).then(resp => {
         const { data } = resp
         // 有数据
         this.dataSource = data
