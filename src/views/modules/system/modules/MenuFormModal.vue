@@ -132,16 +132,6 @@ export default {
   },
   created() { },
   methods: {
-    initFormData() {
-      return {
-        type: 0,
-        name: '',
-        sortOrder: 0,
-        icon: '',
-        url: '',
-        perms: ''
-      }
-    },
     async fetchtMenuList() {
       try {
         const resp = await getMenuListToTree()
@@ -161,7 +151,15 @@ export default {
       // 设置菜单信息
       this.treeSelectData.parent = { id: '0', name: '' }
       // 新增时的默认数据
-      this.resetData('新增', this.initFormData())
+      const initFormData = {
+        type: 0,
+        name: '',
+        sortOrder: 0,
+        icon: '',
+        url: '',
+        perms: ''
+      }
+      this.resetData('新增', initFormData)
     },
     async edit(data) {
       // 查询菜单信息

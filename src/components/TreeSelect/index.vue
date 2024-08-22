@@ -55,7 +55,7 @@ export default {
       // 当组件初始化时立即执行一次
       immediate: true,
       handler(newVal) {
-        console.log('value', newVal)
+        console.log('val', newVal)
         this.label = newVal.name
       }
     }
