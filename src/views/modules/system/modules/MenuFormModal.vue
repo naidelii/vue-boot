@@ -12,6 +12,17 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+
+          <el-col v-if="dataForm.type !== 0" :span="24">
+            <el-form-item label="上级菜单" prop="parent">
+              <tree-select
+                v-model="treeSelectData.parent"
+                :placeholder="treeSelectData.placeholder"
+                :tree-data="treeSelectData.menuList"
+                :tree-props-config="treeSelectData.menuListTreeProps"
+              />
+            </el-form-item>
+          </el-col>
           <!-- 菜单名称 -->
           <el-col :span="12">
             <el-form-item :label="menuNameLabel" prop="name">
@@ -22,16 +33,6 @@
           <el-col :span="12">
             <el-form-item label="显示排序" prop="sortOrder">
               <el-input-number v-model="dataForm.sortOrder" controls-position="right" :min="0" />
-            </el-form-item>
-          </el-col>
-          <el-col v-if="dataForm.type !== 0" :span="24">
-            <el-form-item label="上级菜单" prop="parent">
-              <tree-select
-                v-model="treeSelectData.parent"
-                :placeholder="treeSelectData.placeholder"
-                :tree-data="treeSelectData.menuList"
-                :tree-props-config="treeSelectData.menuListTreeProps"
-              />
             </el-form-item>
           </el-col>
 
@@ -159,7 +160,7 @@ export default {
     },
     add() {
       // 设置菜单信息
-      this.treeSelectData.parent = { id: '0', name: '' }
+      this.treeSelectData.parent = { id: '', name: '' }
       // 新增时的默认数据
       this.resetData('新增', this.initFormData())
     },

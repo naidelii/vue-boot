@@ -34,8 +34,8 @@ export default {
   methods: {
     init(data) {
       this.$nextTick(() => {
-        // 重置表单字段和验证状态
         this.$refs.form.resetFields()
+        // 重置表单字段和验证状态
         this.dataForm = { id: data.id, password: '' }
       })
       this.visible = true

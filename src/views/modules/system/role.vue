@@ -22,7 +22,7 @@
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteBatch">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete()">批量删除</el-button>
       </el-col>
     </el-row>
     <!-- 操作按钮区域-END -->
@@ -73,22 +73,12 @@ export default {
     return {
       url: {
         list: '/sys/role/listPage',
-        deleteBatch: '/sys/role/deleteBatch'
+        delete: '/sys/role/deleteBatch'
       }
     }
   },
   created() { },
-  methods: {
-    handleDelete(id) {
-      if (!id) {
-        this.$message.error('当前未选择要删除的数据！')
-        return
-      }
-      const title = `是否确认【删除】【ID: ${id}】的数据项？`
-      // 调用批量删除
-      this.doHandleDelete(title, [id], true)
-    }
-  }
+  methods: {}
 }
 </script>
 
