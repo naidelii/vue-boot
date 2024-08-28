@@ -8,6 +8,7 @@
             :placeholder="treeSelectData.placeholder"
             :tree-data="treeSelectData.treeData"
             :tree-props-config="treeSelectData.props"
+            @clear="setParentDefaultData"
           />
         </el-form-item>
         <el-form-item label="分类名称" prop="categoryName">
@@ -29,6 +30,7 @@
 
 <script>
 import { getInfoById, getCategoryListToTree } from '@/api/product/category'
+import { postAction } from '@/utils/action'
 import TreeSelect from '@/components/TreeSelect'
 export default {
   name: 'CategoryFormModel',
@@ -59,11 +61,20 @@ export default {
           label: 'categoryName',
           children: 'children'
         }
+      },
+      url: {
+        save: '/product/category/save',
+        update: '/product/category/update'
       }
     }
   },
   created() { },
   methods: {
+    // 设置父菜单默认数据
+    setParentDefaultData() {
+      // 设置菜单信息
+      this.treeSelectData.parent = { id: '0', categoryName: '' }
+    },
     async fetchtCategoryList() {
       try {
         const resp = await getCategoryListToTree()
@@ -80,8 +91,8 @@ export default {
       this.visible = true
     },
     add() {
-      // 设置菜单信息
-      this.treeSelectData.parent = { id: '0', name: '' }
+      // 设置父菜单信息
+      this.setParentDefaultData()
       // 新增时的默认数据
       const initFormData = {
         categoryName: '',
@@ -94,7 +105,7 @@ export default {
       const resp = await getInfoById({ id: data.id })
       const { parentId, parentName, ...dataModel } = resp.data
       // 设置菜单信息
-      this.treeSelectData.parent = { id: parentId, name: parentName }
+      this.treeSelectData.parent = { id: parentId, categoryName: parentName }
       this.resetData('编辑', dataModel)
     },
     // 关闭弹出框
@@ -104,15 +115,26 @@ export default {
     // 表单提交
     handleSubmit() {
       // 触发表单验证
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         // 表单校验未通过
         if (!valid) return false
         // 开始加载
         this.loading = true
-        const reqData = { ...this.dataForm, parentId: this.treeSelectData.parent.id }
-        console.log('reqData', reqData)
+        try {
+          const url = this.dataForm.id ? this.url.update : this.url.save
+          const reqData = { ...this.dataForm, parentId: this.treeSelectData.parent.id }
+          await postAction(url, reqData)
+          this.$message.success('操作成功')
+          this.handleCancel()
+          this.$emit('success')
+        } catch (error) {
+          this.$message.error(error.message)
+        } finally {
+          this.loading = false
+        }
       })
     }
+
   }
 }
 </script>

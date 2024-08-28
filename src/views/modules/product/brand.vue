@@ -3,8 +3,11 @@
   <div class="app-container">
     <!-- 查询区域 -->
     <el-form ref="queryForm" :model="queryParam" :inline="true">
-      <el-form-item prop="username" label="用户名">
-        <el-input v-model="queryParam.username" placeholder="请输入用户名" size="small" clearable style="width: 200px" />
+      <el-form-item prop="brandName" label="品牌名称">
+        <el-input v-model="queryParam.brandName" placeholder="请输入品牌名称" size="small" clearable style="width: 200px" />
+      </el-form-item>
+      <el-form-item prop="firstLetter" label="检索首字母">
+        <el-input v-model="queryParam.firstLetter" placeholder="请输入检索首字母" size="small" clearable style="width: 200px" />
       </el-form-item>
 
       <!-- 查询区域-操作按钮 -->
@@ -33,30 +36,27 @@
       <el-table-column type="selection" align="center" width="50" />
 
       <!-- 数据列 -->
-      <el-table-column prop="id" align="center" label="ID" />
-      <el-table-column prop="username" align="center" label="用户名" />
-      <el-table-column prop="email" align="center" label="邮箱" />
-      <el-table-column prop="mobile" align="center" width="120" label="手机号" />
-      <el-table-column prop="status" align="center" label="状态">
+      <el-table-column prop="id" align="center" width="180" label="ID" />
+      <el-table-column prop="brandName" align="center" label="品牌名称" />
+      <el-table-column prop="logoUrl" align="center" label="品牌logo">
         <template slot-scope="{ row }">
-          <status-tag :value="row.status" :options="statusOptions" />
+          <el-image :src="row.logoUrl" fit="fill" />
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" align="center" width="160" label="创建时间" />
+      <el-table-column prop="description" align="center" label="介绍" />
+      <el-table-column prop="isShow" align="center" label="是否显示">
+        <template #default="{ row }">
+          <status-switch v-model="row.isShow" :record-id="row.id" @change="updateBrandStatus" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="sortOrder" align="center" label="排序值" />
+      <el-table-column prop="firstLetter" align="center" label="检索首字母" />
 
       <!-- 操作列 -->
-      <el-table-column align="center" width="170" label="操作">
+      <el-table-column align="center" width="160" label="操作">
         <template slot-scope="{ row }">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(row)">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(row.id)">删除</el-button>
-
-          <el-dropdown class="action-more-dropdown" size="mini" @command="command => handleCommand(command, row)">
-            <!-- 更多列（样式修改在common.scss里面） -->
-            <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="resetPassword" icon="el-icon-key">重置密码</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -71,55 +71,55 @@
     />
 
     <!-- 子组件，使用了mixins，则名称必须是：modalForm -->
-    <user-form-modal ref="modalForm" @success="modalFormSuccess" />
-
-    <!-- 重置密码组件 -->
-    <reset-password-dialog ref="resetPassword" />
+    <brand-form-model ref="modalForm" @success="modalFormSuccess" />
   </div>
 </template>
 
 <script>
 import listMixin from '@/mixins/listMixin'
-import UserFormModal from './modules/UserFormModal'
-import ResetPasswordDialog from './modules/ResetPasswordDialog'
-import StatusTag from '@/components/StatusTag'
+import StatusSwitch from '@/components/StatusSwitch'
+import { postAction } from '@/utils/action'
+import BrandFormModel from './modules/BrandFormModel.vue'
 export default {
   components: {
-    UserFormModal,
-    StatusTag,
-    ResetPasswordDialog
+    StatusSwitch,
+    BrandFormModel
   },
   mixins: [listMixin],
   data() {
     return {
-      statusOptions: [
-        { value: 0, text: '禁用', type: 'danger' },
-        { value: 1, text: '正常', type: '' }
-      ],
       url: {
-        list: '/sys/user/listPage',
-        deleteBatch: '/sys/user/deleteBatch'
+        list: '/product/brand/listPage',
+        update: '/product/brand/update',
+        deleteBatch: '/product/brand/deleteBatch'
       }
     }
   },
-  created() {
-  },
+  created() { },
   methods: {
-    // 更多操作触发
-    handleCommand(command, row) {
-      switch (command) {
-        case 'resetPassword':
-          this.handleResetPassword(row)
-          break
-        default:
-          break
+    // 改变显式状态
+    updateBrandStatus(tableId, newVal, callback) {
+      // 开始加载
+      this.loading = true
+      // 请求的数据
+      const reqData = {
+        id: tableId,
+        isShow: newVal
       }
+      // 发送请求
+      postAction(this.url.update, reqData).then(resp => {
+        this.$message.success('操作成功')
+        // 请求成功，确认更新状态
+        callback(true)
+      }).catch(error => {
+        this.$message.error(error.message)
+        // 请求失败，还原状态
+        callback(false)
+      }).finally(() => {
+        // 请求完成后停止加载
+        this.loading = false
+      })
     },
-    // 重置密码
-    handleResetPassword(row) {
-      this.$refs.resetPassword.init(row)
-    },
-    // 手动处理
     handleDelete(id) {
       if (!id) {
         this.$message.error('当前未选择要删除的数据！')
@@ -133,5 +133,5 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 </style>

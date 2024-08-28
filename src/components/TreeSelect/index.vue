@@ -1,7 +1,7 @@
 <template>
   <div class="tree-select">
     <!-- 使用 el-select 作为下拉框，绑定 model 为 label -->
-    <el-select ref="select" v-model="label" :placeholder="placeholder">
+    <el-select ref="select" v-model="localLabel" :placeholder="placeholder" clearable @clear="handleClear">
       <!-- 自定义 el-option，将 el-tree 作为下拉内容显示 -->
       <el-option class="tree-select-option" value="">
         <!-- 使用 el-tree 显示树形结构数据 -->
@@ -11,6 +11,7 @@
           :props="treePropsConfig"
           :node-key="nodeKey"
           :highlight-current="true"
+          :expand-on-click-node="false"
           @node-click="handleNodeClick"
         />
       </el-option>
@@ -54,11 +55,7 @@ export default {
   },
   data() {
     return {
-    }
-  },
-  computed: {
-    label() {
-      return this.value.name || ''
+      localLabel: ''
     }
   },
   watch: {
@@ -66,10 +63,19 @@ export default {
       immediate: true,
       handler(newVal) {
         this.$nextTick(() => {
+          // 设置label
+          this.localLabel = newVal[this.treePropsConfig.label]
+          // 设置高亮
           setTimeout(() => {
             if (this.$refs.tree) {
-              // 设置高亮显式
-              this.$refs.tree.setCurrentKey(newVal.id)
+              const nodeExists = this.$refs.tree.getNode(newVal.id)
+              if (nodeExists) {
+                // 设置高亮显式
+                this.$refs.tree.setCurrentKey(newVal.id)
+              } else {
+                // 如果节点不存在，清空
+                this.$refs.tree.setCurrentKey(null)
+              }
             }
           }, 300) // 可以调整延迟时间
         })
@@ -83,6 +89,11 @@ export default {
       this.$emit('input', data)
       // 关闭下拉框
       this.$refs.select.blur()
+    },
+    // 清除
+    handleClear() {
+      // 清空选中值
+      this.$emit('clear')
     }
   }
 }

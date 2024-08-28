@@ -31,6 +31,7 @@
                 :placeholder="treeSelectData.placeholder"
                 :tree-data="treeSelectData.menuList"
                 :tree-props-config="treeSelectData.menuListTreeProps"
+                @clear="setParentDefaultData"
               />
             </el-form-item>
           </el-col>
@@ -132,6 +133,11 @@ export default {
   },
   created() { },
   methods: {
+    // 设置父菜单默认数据
+    setParentDefaultData() {
+      // 设置菜单信息
+      this.treeSelectData.parent = { id: '0', name: '' }
+    },
     async fetchtMenuList() {
       try {
         const resp = await getMenuListToTree()
@@ -149,7 +155,7 @@ export default {
     },
     add() {
       // 设置菜单信息
-      this.treeSelectData.parent = { id: '0', name: '' }
+      this.setParentDefaultData()
       // 新增时的默认数据
       const initFormData = {
         type: 0,
