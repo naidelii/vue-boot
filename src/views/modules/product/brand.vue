@@ -40,7 +40,7 @@
       <el-table-column prop="brandName" align="center" label="品牌名称" />
       <el-table-column prop="logoUrl" align="center" label="品牌logo">
         <template slot-scope="{ row }">
-          <el-image :src="row.logoUrl" fit="fill" />
+          <image-cell :value="row.logoUrl" />
         </template>
       </el-table-column>
       <el-table-column prop="description" align="center" label="介绍" />
@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import ImageCell from '@/components/ImageCell'
 import listMixin from '@/mixins/listMixin'
 import StatusSwitch from '@/components/StatusSwitch'
 import { postAction } from '@/utils/action'
@@ -83,7 +84,8 @@ import BrandFormModel from './modules/BrandFormModel'
 export default {
   components: {
     StatusSwitch,
-    BrandFormModel
+    BrandFormModel,
+    ImageCell
   },
   mixins: [listMixin],
   data() {

@@ -32,6 +32,11 @@ export default {
       type: [String],
       required: false,
       default: 'default'
+    },
+    // 上传文件大小限制(MB)
+    fileSize: {
+      type: Number,
+      default: 5
     }
   },
   data() {
@@ -51,36 +56,41 @@ export default {
       immediate: true,
       handler(newVal) {
         // 设置图片
-        this.imageUrl = newVal || ''
+        this.imageUrl = newVal ? this.uploadAction + newVal : ''
       }
     }
   },
   methods: {
     // 文件上传前（可以做一些校验）
     handleBeforeUpload(file) {
-      // 检查文件类型是否为 JPG 或 PNG
-      const isJPG = file.type === 'image/jpeg'
-      const isPNG = file.type === 'image/png'
-      if (!isJPG && !isPNG) {
-        this.$message.error('只能上传 JPG/PNG 文件')
+      const type = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg']
+      const isJPG = type.includes(file.type)
+      // 检验文件格式
+      if (!isJPG) {
+        this.$message.error(`图片格式错误!`)
         return false
       }
-      // 检查文件大小是否小于 10MB
-      const isLt10M = file.size / 1024 / 1024 < 10
-      if (!isLt10M) {
-        this.$message.error('上传文件大小不能超过 10MB!')
-        return false
+      // 校检文件大小
+      if (this.fileSize) {
+        const isLt = file.size / 1024 / 1024 < this.fileSize
+        if (!isLt) {
+          this.$message.error(`上传文件大小不能超过 ${this.fileSize} MB!`)
+          return false
+        }
       }
+
       // 获取文件名
       const fileName = file.name
       const params = { fileName, dirName: this.dirName }
       return new Promise((resolve, reject) => {
-      // 发起请求获得上传凭证
+        // 发起请求获得上传凭证
         getPolicy(params).then(resp => {
           this.formData = resp.data
+          // 将 URL 封装到文件对象中
+          file.url = resp.data.key
           // 允许文件上传
           resolve(true)
-        }).catch(e => {
+        }).catch(() => {
           this.$message.error('获取上传凭证失败，请稍后重试')
           // 阻止文件上传
           reject(new Error('Failed to getPolicy'))
@@ -90,9 +100,7 @@ export default {
     // 文件上传成功时的钩子
     handleSuccess(response, file, fileList) {
       // 当前文件的信息
-      const url = this.uploadAction + this.formData.key
-      // 展示图片
-      this.imageUrl = url
+      const url = file.raw.url
       // 将图片信息返回给父组件
       this.$emit('input', url)
     }
