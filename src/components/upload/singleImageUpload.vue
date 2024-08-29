@@ -52,19 +52,36 @@ export default {
   },
   methods: {
     // 文件上传前（可以做一些校验）
-    async handleBeforeUpload(file) {
+    handleBeforeUpload(file) {
+      console.log('file', file)
+      // 检查文件类型是否为 JPG 或 PNG
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      if (!isJPG && !isPNG) {
+        this.$message.error('只能上传 JPG/PNG 文件')
+        return false
+      }
+      // 检查文件大小是否小于 10MB
+      const isLt10M = file.size / 1024 / 1024 < 10
+      if (!isLt10M) {
+        this.$message.error('上传文件大小不能超过 10MB!')
+        return false
+      }
       // 获取文件名
       const fileName = file.name
       const params = { fileName, dirName: this.dirName }
-      try {
-        // 发送请求，获得上传凭证
-        const resp = await getPolicy(params)
-        this.formData = resp.data
-      } catch (e) {
-        this.$message.error('获取上传凭证失败，请稍后重试')
-        // 抛出异常，不继续执行（如果上面有需要不继续执行，也是需要抛出异常才可以）
-        throw new Error('Failed to getPolicy')
-      }
+      return new Promise((resolve, reject) => {
+      // 发起请求获得上传凭证
+        getPolicy(params).then(resp => {
+          this.formData = resp.data
+          // 允许文件上传
+          resolve(true)
+        }).catch(e => {
+          this.$message.error('获取上传凭证失败，请稍后重试')
+          // 阻止文件上传
+          reject(new Error('Failed to getPolicy'))
+        })
+      })
     },
     // 文件上传成功时的钩子
     handleSuccess(response, file, fileList) {
