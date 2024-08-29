@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import { ErrorEnum } from '@/utils/index'
@@ -48,25 +48,23 @@ service.interceptors.response.use(
     // 如果是登录失效
     if (respCode === ErrorEnum.UNAUTHORIZED.code) {
       // 显示提示信息
-      Message({
-        message: errorMsg,
-        type: 'error',
-        // 3秒后关闭提示
-        duration: 3 * 1000,
-        onClose: async() => {
-          // 注销用户
-          await store.dispatch('user/logout')
-        }
+      const title = '很抱歉，登录已过期，请重新登录'
+      MessageBox.confirm(title, '系统提示', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/logout').then(() => {
+          location.href = '/index'
+        })
+      }).catch(() => {
+        // 取消了不做操作
       })
     } else {
       // 打印异常信息
-      Message({
-        message: errorMsg,
-        type: 'error',
-        duration: 3 * 1000
-      })
+      Message({ message: errorMsg, type: 'error' })
+      return Promise.reject(new Error(errorMsg))
     }
-    return Promise.reject(new Error(errorMsg))
   },
   // 响应拦截器异常处理（HTTP状态码非200）
   error => {
