@@ -48,7 +48,7 @@ service.interceptors.response.use(
       case ErrorEnum.UNAUTHORIZED.code:
         // 显示提示信息
         Message({
-          message: ErrorEnum.UNAUTHORIZED.message,
+          message: errorMsg,
           type: 'error',
           // 3秒后关闭提示
           duration: 3000,
@@ -61,13 +61,21 @@ service.interceptors.response.use(
       case ErrorEnum.FORBIDDEN.code:
         // 打印异常信息
         Message({
-          message: ErrorEnum.FORBIDDEN.message,
+          message: errorMsg,
+          type: 'error',
+          duration: 3 * 1000
+        })
+        break
+      case ErrorEnum.SERVICE_UNAVAILABLE.code:
+        // 打印异常信息
+        Message({
+          message: errorMsg,
           type: 'error',
           duration: 3 * 1000
         })
         break
       default:
-        // 除了401和403异常主动提示错误，其他的交由前端处理
+        // 除了401、403、503异常主动提示错误，其他的交由前端处理
         break
     }
     return Promise.reject(new Error(errorMsg))
