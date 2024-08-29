@@ -141,8 +141,6 @@ export default {
           this.handleCancel()
           // 通知父组件操作成功
           this.$emit('success')
-        }).catch(error => {
-          this.$message.error(error.message)
         }).finally(() => {
           // 请求完成后停止加载
           this.loading = false

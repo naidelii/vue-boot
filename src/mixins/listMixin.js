@@ -60,8 +60,6 @@ export default {
         this.dataSource = data.records || []
         // 数据总数
         this.ipagination.total = data.total || 0
-      } catch (e) {
-        this.$message.error('操作失败，请稍微再试')
       } finally {
         this.loading = false
       }
@@ -119,8 +117,6 @@ export default {
         this.$message.success('操作成功')
         // 重新获取列表数据
         this.loadData()
-      } catch (error) {
-        this.$message.error(error.message)
       } finally {
         this.loading = false
       }

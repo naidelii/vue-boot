@@ -80,8 +80,6 @@ export default {
         const { data } = resp
         // 有数据
         this.dataSource = data
-      }).catch(e => {
-        this.$message.error('操作失败，请稍微再试')
       }).finally(() => {
         this.loading = false
       })

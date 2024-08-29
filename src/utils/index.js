@@ -12,6 +12,7 @@ export const ErrorEnum = {
   DEFAULT: {
     message: '服务器开小差，请稍后再试'
   }
+
 }
 
 /**

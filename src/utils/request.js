@@ -17,6 +17,7 @@ service.interceptors.request.use(
   request => {
     // 在请求发送之前做一些处理
     request.headers['Content-Type'] = 'application/json;charset=utf-8'
+    // 获取token
     const token = getToken()
     if (token) {
       // 让每个请求携带 token
@@ -43,44 +44,31 @@ service.interceptors.response.use(
       return resp
     }
     // 处理错误情况
-    const errorMsg = resp.msg || 'Error'
-    switch (respCode) {
-      case ErrorEnum.UNAUTHORIZED.code:
-        // 显示提示信息
-        Message({
-          message: errorMsg,
-          type: 'error',
-          // 3秒后关闭提示
-          duration: 3000,
-          onClose: async() => {
-            // 注销用户
-            await store.dispatch('user/logout')
-          }
-        })
-        break
-      case ErrorEnum.FORBIDDEN.code:
-        // 打印异常信息
-        Message({
-          message: errorMsg,
-          type: 'error',
-          duration: 3 * 1000
-        })
-        break
-      case ErrorEnum.SERVICE_UNAVAILABLE.code:
-        // 打印异常信息
-        Message({
-          message: errorMsg,
-          type: 'error',
-          duration: 3 * 1000
-        })
-        break
-      default:
-        // 除了401、403、503异常主动提示错误，其他的交由前端处理
-        break
+    const errorMsg = resp.msg || ErrorEnum.DEFAULT.message
+    // 如果是登录失效
+    if (respCode === ErrorEnum.UNAUTHORIZED.code) {
+      // 显示提示信息
+      Message({
+        message: errorMsg,
+        type: 'error',
+        // 3秒后关闭提示
+        duration: 3 * 1000,
+        onClose: async() => {
+          // 注销用户
+          await store.dispatch('user/logout')
+        }
+      })
+    } else {
+      // 打印异常信息
+      Message({
+        message: errorMsg,
+        type: 'error',
+        duration: 3 * 1000
+      })
     }
     return Promise.reject(new Error(errorMsg))
   },
-  // 响应拦截器异常处理
+  // 响应拦截器异常处理（HTTP状态码非200）
   error => {
     Message({
       message: ErrorEnum.DEFAULT.message,

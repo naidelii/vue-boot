@@ -60,8 +60,6 @@ export default {
           this.$message.success('操作成功')
           // 关闭当前弹窗
           this.handleCancel()
-        }).catch(error => {
-          this.$message.error(error.message)
         }).finally(() => {
           // 请求完成后停止加载
           this.loading = false

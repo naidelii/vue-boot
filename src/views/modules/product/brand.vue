@@ -79,7 +79,7 @@
 import listMixin from '@/mixins/listMixin'
 import StatusSwitch from '@/components/StatusSwitch'
 import { postAction } from '@/utils/action'
-import BrandFormModel from './modules/BrandFormModel.vue'
+import BrandFormModel from './modules/BrandFormModel'
 export default {
   components: {
     StatusSwitch,
@@ -111,8 +111,7 @@ export default {
         this.$message.success('操作成功')
         // 请求成功，确认更新状态
         callback(true)
-      }).catch(error => {
-        this.$message.error(error.message)
+      }).catch(() => {
         // 请求失败，还原状态
         callback(false)
       }).finally(() => {
