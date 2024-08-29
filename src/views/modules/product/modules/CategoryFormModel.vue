@@ -15,7 +15,7 @@
           <el-input v-model="dataForm.categoryName" />
         </el-form-item>
         <el-form-item label="图片" prop="imageUrl">
-          <el-input v-model="dataForm.imageUrl" />
+          <single-image-upload v-model="dataForm.imageUrl" />
         </el-form-item>
       </el-form>
 
@@ -29,13 +29,15 @@
 </template>
 
 <script>
+import SingleImageUpload from '@/components/upload/singleImageUpload'
 import { getInfoById, getCategoryListToTree } from '@/api/product/category'
 import { postAction } from '@/utils/action'
 import TreeSelect from '@/components/TreeSelect'
 export default {
   name: 'CategoryFormModel',
   components: {
-    TreeSelect
+    TreeSelect,
+    SingleImageUpload
   },
   data() {
     return {
