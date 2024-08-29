@@ -27,6 +27,11 @@ export default {
       type: [String, null],
       required: false,
       default: ''
+    },
+    uploadDir: {
+      type: [String],
+      required: false,
+      default: 'default'
     }
   },
   data() {
@@ -34,7 +39,7 @@ export default {
       // 从环境变量中获取 uploadAction
       uploadAction: process.env.VUE_APP_UPLOAD_ACTION,
       // 文件上传至哪个文件夹
-      dirName: 'brand',
+      dirName: this.uploadDir,
       // minio的相关配置
       formData: {},
       // 方法的图片
@@ -53,7 +58,6 @@ export default {
   methods: {
     // 文件上传前（可以做一些校验）
     handleBeforeUpload(file) {
-      console.log('file', file)
       // 检查文件类型是否为 JPG 或 PNG
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'

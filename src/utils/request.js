@@ -57,8 +57,6 @@ service.interceptors.response.use(
         store.dispatch('user/logout').then(() => {
           location.href = '/index'
         })
-      }).catch(() => {
-        // 取消了不做操作
       })
     } else {
       // 打印异常信息

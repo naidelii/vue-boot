@@ -5,9 +5,6 @@
         <el-form-item label="品牌名称" prop="brandName">
           <el-input v-model="dataForm.brandName" placeholder="品牌名称" />
         </el-form-item>
-        <el-form-item label="品牌logo" prop="logoUrl">
-          <single-image-upload v-model="dataForm.logoUrl" />
-        </el-form-item>
         <el-form-item label="介绍" prop="description">
           <el-input v-model="dataForm.description" placeholder="介绍" />
         </el-form-item>
@@ -15,10 +12,13 @@
           <status-switch v-model="dataForm.isShow" />
         </el-form-item>
         <el-form-item label="排序值" prop="sortOrder">
-          <el-input v-model="dataForm.sortOrder" placeholder="排序值" />
+          <el-input-number v-model="dataForm.sortOrder" :min="1" label="排序值" />
         </el-form-item>
         <el-form-item label="检索首字母" prop="firstLetter">
           <el-input v-model="dataForm.firstLetter" placeholder="检索首字母" />
+        </el-form-item>
+        <el-form-item label="品牌logo" prop="logoUrl">
+          <single-image-upload v-model="dataForm.logoUrl" upload-dir="brand" />
         </el-form-item>
       </el-form>
 
@@ -34,6 +34,8 @@
 <script>
 import SingleImageUpload from '@/components/upload/singleImageUpload'
 import StatusSwitch from '@/components/StatusSwitch'
+import { postAction } from '@/utils/action'
+import { getInfoById } from '@/api/product/brand'
 export default {
   name: 'BrandFormModel',
   components: {
@@ -51,7 +53,13 @@ export default {
       // 表单的数据
       dataForm: {},
       rules: {
-
+        brandName: [
+          { required: true, message: '品牌名称不能为空', trigger: 'blur' }
+        ]
+      },
+      url: {
+        save: '/product/brand/save',
+        update: '/product/brand/update'
       }
     }
   },
@@ -65,9 +73,16 @@ export default {
     add() {
       // 新增时的默认数据
       const initFormData = {
-        isShow: 1
+        isShow: 1,
+        sortOrder: 1
       }
       this.resetData('新增', initFormData)
+    },
+    async edit(data) {
+      // 查询分类信息
+      const resp = await getInfoById({ id: data.id })
+      const { ...dataModel } = resp.data
+      this.resetData('编辑', dataModel)
     },
     // 关闭弹出框
     handleCancel() {
@@ -76,13 +91,21 @@ export default {
     // 表单提交
     handleSubmit() {
       // 触发表单验证
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         // 表单校验未通过
         if (!valid) return false
         // 开始加载
-        // this.loading = true
-        const reqData = { ...this.dataForm }
-        console.log('reqData', reqData)
+        this.loading = true
+        try {
+          const url = this.dataForm.id ? this.url.update : this.url.save
+          const reqData = { ...this.dataForm }
+          await postAction(url, reqData)
+          this.$message.success('操作成功')
+          this.handleCancel()
+          this.$emit('success')
+        } finally {
+          this.loading = false
+        }
       })
     }
   }

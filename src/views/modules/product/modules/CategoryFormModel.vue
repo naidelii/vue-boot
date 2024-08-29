@@ -129,8 +129,6 @@ export default {
           this.$message.success('操作成功')
           this.handleCancel()
           this.$emit('success')
-        } catch (error) {
-          this.$message.error(error.message)
         } finally {
           this.loading = false
         }
