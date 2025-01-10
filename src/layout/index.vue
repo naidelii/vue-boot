@@ -2,8 +2,10 @@
   <div :class="classObj" class="app-wrapper">
     <!-- 在移动设备上，侧边栏打开时会显示一个背景遮罩，点击该遮罩可以关闭侧边栏 -->
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+
     <!-- 侧边栏组件 -->
     <sidebar class="sidebar-container" />
+
     <!-- 主内容区域 -->
     <div class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
@@ -61,8 +63,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~@/styles/mixin.scss';
-@import '~@/styles/variables.scss';
+@import '~@/assets/styles/mixin.scss';
+@import '~@/assets/styles/variables.scss';
 
 .app-wrapper {
   @include clearfix;
@@ -100,4 +102,5 @@ export default {
 .mobile .fixed-header {
   width: 100%;
 }
+
 </style>

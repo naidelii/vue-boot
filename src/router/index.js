@@ -19,7 +19,7 @@ export const constantRoutes = [
 
   {
     path: '/404',
-    component: () => import('@/views/404'),
+    component: () => import('@/views/error/404'),
     // 该路由不在菜单中显示
     hidden: true
   },
@@ -37,11 +37,10 @@ export const constantRoutes = [
   }
 ]
 
-// 用于存放动态路由
-export const asyncRoutes = []
-
 const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
+  // 设置为 'history' 模式
+  mode: 'history',
   // 初始加载静态路由
   routes: constantRoutes
 })
@@ -50,7 +49,9 @@ const router = createRouter()
 
 // 重置路由配置，通常在用户权限发生变化时使用
 export function resetRouter() {
+  // 创建新的路由实例
   const newRouter = createRouter()
+  // 将现有路由的 matcher 替换为新的 matcher
   router.matcher = newRouter.matcher
 }
 

@@ -1,4 +1,4 @@
-import { getInfo } from '@/api/user'
+import { getCurrentUser } from '@/api/system/user'
 import { login, logout } from '@/api/login'
 import { setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -19,7 +19,7 @@ const mutations = {
 
 const actions = {
   // 用户登录
-  login({ commit }, userInfo) {
+  login(context, userInfo) {
     return new Promise((resolve, reject) => {
       // 调用login请求
       login(userInfo).then(resp => {
@@ -34,10 +34,10 @@ const actions = {
   },
 
   // 获取用户信息
-  getInfo({ commit }) {
+  getCurrentUser({ commit }) {
     return new Promise((resolve, reject) => {
       // 调用获取用户信息的接口
-      getInfo().then(resp => {
+      getCurrentUser().then(resp => {
         const { username, avatar } = resp.data
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
@@ -48,7 +48,7 @@ const actions = {
     })
   },
 
-  // user logout
+  // 登出
   logout({ commit }) {
     return new Promise((resolve, reject) => {
       // 调用logout方法
@@ -64,6 +64,19 @@ const actions = {
       }).catch(error => {
         reject(error)
       })
+    })
+  },
+  // 前端登出
+  fedLogOut({ commit }) {
+    return new Promise(resolve => {
+      // 清空state中的用户信息
+      commit('SET_NAME', '')
+      commit('SET_AVATAR', '')
+      // 清空本地缓存的token
+      removeToken()
+      // 重置路由
+      resetRouter()
+      resolve()
     })
   }
 }
