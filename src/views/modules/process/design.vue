@@ -57,17 +57,17 @@
     />
 
     <!-- 子组件，使用了mixins，则名称必须是：modalForm -->
-    <BpmnEditor ref="modalForm" />
+    <design-form-modal ref="modalForm" @success="modalFormSuccess" />
   </div>
 </template>
 
 <script>
 import listMixin from '@/mixins/listMixin'
-import BpmnEditor from '@/components/Bpmn/index'
+import designFormModal from './modules/DesignFormModal'
 
 export default {
   components: {
-    BpmnEditor
+    designFormModal
   },
   mixins: [listMixin],
   data() {

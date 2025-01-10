@@ -1,0 +1,74 @@
+/* 导入 流程图里面的字体图标 */
+@import url("./font-awesome.min.css");
+
+/* 导入 BPMN.js 和样式 */
+@import url("~bpmn-js/dist/assets/diagram-js.css");
+@import url("~bpmn-js/dist/assets/bpmn-font/css/bpmn.css");
+@import url("~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css");
+@import url("~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css");
+
+.container {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  overflow: hidden;
+
+  .header {
+    height: 60px;
+    background-color: #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: row;
+    /* 确保子元素横向排列 */
+    height: 100%;
+    /* 填满父容器 */
+    width: 100%;
+    /* 保证宽度100% */
+
+    .bpmn-viewer-contents {
+      flex: 3;
+      /* 画板占 3/4 宽度 */
+      background-color: #f9f9f9;
+      /* 可选择性添加背景 */
+      background: url(~@/assets/bpmn/svg/bpmn-background.svg) repeat !important
+    }
+
+    .panel {
+      flex: 1;
+      /* 属性面板占 1/4 宽度 */
+      background-color: #fff;
+      /* 可选择性添加背景 */
+    }
+  }
+}
+
+.bpmn-panel {
+  width: 350px;
+  border: 1px solid #eeeeee;
+  padding: 0 5px;
+
+  .el-header {
+    border-bottom: solid 2px #e4e7ed;
+    padding: 0;
+
+    .config-tab {
+      height: 43px;
+      line-height: 43px;
+      display: inline-block;
+      width: 50%;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      cursor: pointer;
+    }
+  }
+}
